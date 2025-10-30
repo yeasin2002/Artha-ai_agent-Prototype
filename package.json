@@ -35,5 +35,12 @@
     "tsdown": "^0.15.9",
     "typescript": "^5.9.3",
     "vitest": "^4.0.1"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.25",
+    "@google/generative-ai": "^0.24.1",
+    "ai": "^5.0.82",
+    "cheerio": "^1.1.2",
+    "zod": "3.23.8"
   }
 }
