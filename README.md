@@ -1,305 +1,380 @@
-/**
- * QUICK TEST SCRIPT FOR AI SCRAPING AGENT
- * 
- * Run this to test your agent setup:
- * npx tsx test-agent.ts
- * 
- * or add to package.json:
- * "scripts": { "test": "npx tsx test-agent.ts" }
- * then run: npm test
- */
+# 🤖 AI Web Scraping Agent - Complete Setup Guide
 
-import { runScrapingAgent } from './lib/ai-agent';
-import { generateAllSearchUrls, detectProductCategory } from './lib/website-config';
+A powerful AI agent built with Vercel AI SDK and Gemini AI that autonomously scrapes and compares products from Bangladesh e-commerce websites.
 
-// ============================================================================
-// COLORS FOR CONSOLE OUTPUT
-// ============================================================================
+## 🌟 Features
 
-const colors = {
-  reset: '\x1b[0m',
-  bright: '\x1b[1m',
-  dim: '\x1b[2m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
-  cyan: '\x1b[36m',
+- **🔍 Intelligent Scraping**: AI-powered web scraping without traditional scraping libraries
+- **⚖️ Product Comparison**: Compare products across multiple e-commerce sites
+- **💰 Price Analysis**: Find best deals and calculate potential savings
+- **📊 Availability Tracking**: Check stock status across stores
+- **🎯 Natural Language Interface**: Ask questions in plain English
+- **🚀 Fast & Efficient**: Uses Gemini 2.0 Flash for quick responses
+
+## 📦 Supported Websites
+
+- **Startech** (startech.com.bd)
+- **Techland BD** (techlandbd.com)
+- **Ryans Computers** (ryans.com)
+
+## 🛠️ Installation
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn or pnpm
+- Google AI Studio API Key (Gemini)
+
+### Step 1: Install Dependencies
+
+```bash
+npm install ai @ai-sdk/google zod
+# or
+yarn add ai @ai-sdk/google zod
+# or
+pnpm add ai @ai-sdk/google zod
+```
+
+### Step 2: Environment Variables
+
+Create a `.env.local` file in your project root:
+
+```env
+# Google AI (Gemini) API Key
+GOOGLE_GENERATIVE_AI_API_KEY=your_api_key_here
+
+# Optional: Set custom model
+GEMINI_MODEL=gemini-2.0-flash-exp
+```
+
+**How to get your API key:**
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Click "Create API Key"
+3. Copy the key and paste it in your `.env.local` file
+
+### Step 3: Project Structure
+
+```
+your-project/
+├── lib/
+│   ├── ai-agent.ts              # Main AI agent
+│   └── website-config.ts        # Website configurations
+├── app/
+│   └── api/
+│       └── scrape/
+│           └── route.ts         # API endpoint (App Router)
+├── components/
+│   └── ProductScrapingAgent.tsx # React component
+├── .env.local                   # Environment variables
+└── package.json
+```
+
+### Step 4: Copy Files
+
+1. Copy `ai-agent.ts` to `lib/ai-agent.ts`
+2. Copy `website-config.ts` to `lib/website-config.ts`
+3. Copy the API route to `app/api/scrape/route.ts`
+4. Copy the React component to `components/ProductScrapingAgent.tsx`
+
+## 🚀 Usage
+
+### Method 1: Direct Function Call
+
+```typescript
+import { runScrapingAgent } from '@/lib/ai-agent';
+
+async function main() {
+  const result = await runScrapingAgent(
+    'Compare Intel Core i7-13700K and AMD Ryzen 7 7700X on all websites'
+  );
+  
+  console.log(result.response);
+}
+
+main();
+```
+
+### Method 2: API Endpoint
+
+```typescript
+// Make a POST request to your API
+const response = await fetch('/api/scrape', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    query: 'Find best price for RTX 4070 Ti',
+    mode: 'compare',
+  }),
+});
+
+const data = await response.json();
+console.log(data.response);
+```
+
+### Method 3: React Component
+
+```tsx
+import ProductScrapingAgent from '@/components/ProductScrapingAgent';
+
+export default function Home() {
+  return (
+    <main>
+      <ProductScrapingAgent />
+    </main>
+  );
+}
+```
+
+## 📝 Example Queries
+
+### Price Comparison
+```
+"Compare Intel Core i7-13700K and AMD Ryzen 7 7700X processors"
+```
+
+### Best Price Search
+```
+"Find the best price for NVIDIA RTX 4070 graphics card"
+```
+
+### Availability Check
+```
+"Is Samsung 980 Pro 1TB SSD available in stock at Startech and Ryans?"
+```
+
+### Budget Search
+```
+"Show me gaming laptops under 100,000 BDT"
+```
+
+### Multi-Product Comparison
+```
+"Compare prices for AMD Ryzen 7 7700X, ASUS TUF B650-PLUS, and G.Skill 32GB DDR5 across all stores"
+```
+
+## 🎯 How It Works
+
+1. **User Query**: You provide a natural language query
+2. **AI Planning**: Gemini AI analyzes and creates an action plan
+3. **Tool Execution**: AI uses tools to:
+   - Fetch web pages
+   - Extract product data
+   - Compare information
+4. **Analysis**: AI analyzes all data and provides insights
+5. **Response**: You get a comprehensive answer with recommendations
+
+## 🔧 Available Tools
+
+The AI agent has access to these tools:
+
+### 1. `fetchWebPage`
+Fetches HTML content from any URL
+```typescript
+fetchWebPage({ url: 'https://...' })
+```
+
+### 2. `extractProductData`
+Extracts product information from HTML
+```typescript
+extractProductData({ 
+  html: '...',
+  productQuery: 'RTX 4070',
+  websiteName: 'Startech'
+})
+```
+
+### 3. `compareProducts`
+Compares multiple products and provides analysis
+```typescript
+compareProducts({ 
+  products: [...],
+  userPreferences: 'Best value for money'
+})
+```
+
+### 4. `searchProductAcrossSites`
+High-level tool that searches across multiple sites
+```typescript
+searchProductAcrossSites({
+  productName: 'Intel i7-13700K',
+  websites: [...]
+})
+```
+
+## ⚙️ Configuration
+
+### Add More Websites
+
+Edit `lib/website-config.ts`:
+
+```typescript
+export const SUPPORTED_WEBSITES = {
+  // ... existing sites
+  newsite: {
+    name: 'New Site',
+    baseUrl: 'https://newsite.com',
+    searchPattern: 'https://newsite.com/search?q={query}',
+  },
 };
+```
 
-function log(color: keyof typeof colors, message: string) {
-  console.log(`${colors[color]}${message}${colors.reset}`);
+### Customize Agent Behavior
+
+Edit the system prompt in `lib/ai-agent.ts`:
+
+```typescript
+system: `You are an expert AI shopping assistant...
+[Customize behavior here]`
+```
+
+### Adjust Performance
+
+```typescript
+const result = await runScrapingAgent(query, {
+  maxSteps: 15,  // Increase for more thorough searches
+  verbose: true, // Enable detailed logging
+});
+```
+
+## 🎨 Customization
+
+### Change AI Model
+
+```typescript
+import { google } from '@ai-sdk/google';
+
+// Use a different Gemini model
+const result = await generateText({
+  model: google('gemini-pro'),  // or 'gemini-2.0-flash-exp'
+  // ...
+});
+```
+
+### Add Custom Tools
+
+```typescript
+const myCustomTool = tool({
+  description: 'My custom tool',
+  parameters: z.object({
+    param: z.string(),
+  }),
+  execute: async ({ param }) => {
+    // Your logic here
+    return { result: '...' };
+  },
+});
+
+// Add to tools in runScrapingAgent
+tools: {
+  // ... existing tools
+  myCustomTool,
 }
+```
 
-// ============================================================================
-// TEST FUNCTIONS
-// ============================================================================
+## 🐛 Troubleshooting
 
-async function testBasicSetup() {
-  log('cyan', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  log('bright', '🧪 TEST 1: Basic Setup Verification');
-  log('cyan', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+### Issue: API Key Error
+```
+Error: API key not found
+```
+**Solution**: Make sure `GOOGLE_GENERATIVE_AI_API_KEY` is set in `.env.local`
 
-  // Test 1: Check environment variables
-  log('yellow', '📋 Checking environment variables...');
-  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-  
-  if (!apiKey) {
-    log('red', '❌ GOOGLE_GENERATIVE_AI_API_KEY not found in environment');
-    log('yellow', '💡 Add it to your .env.local file');
-    return false;
-  }
-  
-  log('green', '✅ API key found');
+### Issue: No Results Found
+```
+Product not found on any website
+```
+**Solution**: 
+- Check if the product name is spelled correctly
+- Try a more specific or simpler query
+- Verify the websites are accessible
 
-  // Test 2: Check website configuration
-  log('yellow', '📋 Checking website configuration...');
-  const searchUrls = generateAllSearchUrls('test product');
-  
-  if (searchUrls.length === 0) {
-    log('red', '❌ No websites configured');
-    return false;
-  }
-  
-  log('green', `✅ ${searchUrls.length} websites configured:`);
-  searchUrls.forEach(site => {
-    console.log(`   - ${site.name}`);
-  });
+### Issue: Timeout Errors
+```
+Request timeout
+```
+**Solution**: 
+- Increase `maxSteps` parameter
+- Check your internet connection
+- Some sites may be blocking requests - try different user agents
 
-  return true;
-}
+### Issue: Rate Limiting
+```
+Too many requests
+```
+**Solution**:
+- Add delays between requests
+- Implement caching for repeated queries
+- Use exponential backoff for retries
 
-async function testProductCategoryDetection() {
-  log('cyan', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  log('bright', '🧪 TEST 2: Product Category Detection');
-  log('cyan', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+## 📊 Performance Tips
 
-  const testCases = [
-    { query: 'Intel Core i7-13700K', expected: 'processor' },
-    { query: 'RTX 4070 Ti graphics card', expected: 'graphics_card' },
-    { query: 'Samsung 980 Pro NVMe SSD', expected: 'storage' },
-    { query: 'ASUS ROG Strix motherboard', expected: 'motherboard' },
-  ];
+1. **Cache Results**: Store results for popular queries
+2. **Batch Requests**: Group related queries together
+3. **Limit HTML Size**: The agent automatically truncates large HTML (50k chars)
+4. **Use Specific Queries**: More specific = better results
+5. **Enable Verbose Logging**: Helps debug issues
 
-  for (const test of testCases) {
-    const detected = detectProductCategory(test.query);
-    const passed = detected === test.expected;
-    
-    if (passed) {
-      log('green', `✅ "${test.query}" → ${detected}`);
-    } else {
-      log('red', `❌ "${test.query}" → ${detected} (expected: ${test.expected})`);
-    }
-  }
-}
+## 🔒 Security Considerations
 
-async function testSimpleScraping() {
-  log('cyan', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  log('bright', '🧪 TEST 3: Simple Product Search');
-  log('cyan', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+- **Never expose API keys** in client-side code
+- Use **environment variables** for sensitive data
+- Implement **rate limiting** on your API endpoints
+- Add **authentication** for production use
+- Validate and **sanitize user inputs**
 
-  log('yellow', '🔍 Searching for a popular product...');
-  log('dim', 'This may take 30-60 seconds...\n');
+## 📈 Production Deployment
 
-  try {
-    const result = await runScrapingAgent(
-      'Find the price of Intel Core i7 processor on Startech',
-      { maxSteps: 5, verbose: false }
-    );
+### Vercel Deployment
 
-    if (result.success) {
-      log('green', '✅ Agent executed successfully!');
-      log('bright', '\n📊 Results:');
-      log('dim', '─'.repeat(80));
-      console.log(result.response);
-      log('dim', '─'.repeat(80));
-      log('cyan', `\n📈 Stats: ${result.toolCalls} tool calls in ${result.steps?.length || 0} steps`);
-    } else {
-      log('red', '❌ Agent failed:');
-      console.error(result.error);
-    }
-  } catch (error) {
-    log('red', '❌ Test failed with error:');
-    console.error(error);
-  }
-}
+1. Push your code to GitHub
+2. Import project to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy!
 
-async function testPriceComparison() {
-  log('cyan', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  log('bright', '🧪 TEST 4: Price Comparison (Advanced)');
-  log('cyan', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+```bash
+# Or use Vercel CLI
+vercel --prod
+```
 
-  log('yellow', '⚖️  Comparing products across multiple sites...');
-  log('dim', 'This may take 60-90 seconds...\n');
+### Environment Variables in Vercel
 
-  try {
-    const result = await runScrapingAgent(
-      'Compare the price of AMD Ryzen 7 7700X processor on Startech, Techland, and Ryans. Show me the best deal.',
-      { maxSteps: 10, verbose: false }
-    );
+Go to Project Settings → Environment Variables:
+```
+GOOGLE_GENERATIVE_AI_API_KEY = your_key_here
+```
 
-    if (result.success) {
-      log('green', '✅ Comparison completed!');
-      log('bright', '\n📊 Comparison Results:');
-      log('dim', '─'.repeat(80));
-      console.log(result.response);
-      log('dim', '─'.repeat(80));
-      log('cyan', `\n📈 Stats: ${result.toolCalls} tool calls in ${result.steps?.length || 0} steps`);
-    } else {
-      log('red', '❌ Comparison failed:');
-      console.error(result.error);
-    }
-  } catch (error) {
-    log('red', '❌ Test failed with error:');
-    console.error(error);
-  }
-}
+## 🤝 Contributing
 
-async function testAvailabilityCheck() {
-  log('cyan', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  log('bright', '🧪 TEST 5: Availability Check');
-  log('cyan', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+Want to add more features?
+- Add more e-commerce websites
+- Implement price history tracking
+- Add email notifications for price drops
+- Create Chrome extension
+- Build mobile app
 
-  log('yellow', '📦 Checking product availability...');
-  log('dim', 'This may take 30-45 seconds...\n');
+## 📄 License
 
-  try {
-    const result = await runScrapingAgent(
-      'Check if RTX 4070 graphics card is in stock at Startech',
-      { maxSteps: 5, verbose: false }
-    );
+MIT License - Feel free to use in your projects!
 
-    if (result.success) {
-      log('green', '✅ Availability check completed!');
-      log('bright', '\n📊 Results:');
-      log('dim', '─'.repeat(80));
-      console.log(result.response);
-      log('dim', '─'.repeat(80));
-    } else {
-      log('red', '❌ Check failed:');
-      console.error(result.error);
-    }
-  } catch (error) {
-    log('red', '❌ Test failed with error:');
-    console.error(error);
-  }
-}
+## 🙏 Acknowledgments
 
-// ============================================================================
-// MAIN TEST RUNNER
-// ============================================================================
+- Built with [Vercel AI SDK](https://sdk.vercel.ai/)
+- Powered by [Google Gemini](https://deepmind.google/technologies/gemini/)
+- Scraping Bangladesh's top tech e-commerce sites
 
-async function runAllTests() {
-  log('magenta', '\n╔════════════════════════════════════════════════════════════╗');
-  log('magenta', '║        AI WEB SCRAPING AGENT - TEST SUITE                 ║');
-  log('magenta', '╚════════════════════════════════════════════════════════════╝\n');
+---
 
-  const startTime = Date.now();
+## 🚀 Quick Start Command
 
-  // Run tests
-  const setupOk = await testBasicSetup();
-  
-  if (!setupOk) {
-    log('red', '\n❌ Setup verification failed. Please fix the issues above.\n');
-    process.exit(1);
-  }
+```bash
+# Clone, install, and run
+git clone your-repo
+cd your-project
+npm install
+echo "GOOGLE_GENERATIVE_AI_API_KEY=your_key" > .env.local
+npm run dev
+```
 
-  await testProductCategoryDetection();
-
-  // Ask user if they want to run live tests
-  log('yellow', '\n⚠️  The following tests will make actual API calls and web requests.');
-  log('yellow', 'This may take a few minutes and consume API quota.\n');
-  
-  // For automated testing, skip interactive prompt
-  const shouldRunLiveTests = process.argv.includes('--live') || process.argv.includes('--all');
-
-  if (shouldRunLiveTests) {
-    log('green', '▶️  Running live tests...\n');
-    
-    await testSimpleScraping();
-    await testPriceComparison();
-    await testAvailabilityCheck();
-  } else {
-    log('cyan', '💡 To run live tests, use: npm test -- --live\n');
-  }
-
-  // Summary
-  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-  
-  log('magenta', '\n╔════════════════════════════════════════════════════════════╗');
-  log('magenta', '║                    TEST COMPLETE                          ║');
-  log('magenta', '╚════════════════════════════════════════════════════════════╝\n');
-  log('green', `✅ All tests completed in ${duration}s`);
-  log('cyan', '\n📚 Next steps:');
-  console.log('   1. Test the React component: npm run dev');
-  console.log('   2. Try the API endpoint: POST to /api/scrape');
-  console.log('   3. Read the full docs in README.md\n');
-}
-
-// ============================================================================
-// INTERACTIVE MODE
-// ============================================================================
-
-async function interactiveMode() {
-  log('magenta', '\n╔════════════════════════════════════════════════════════════╗');
-  log('magenta', '║          AI WEB SCRAPING AGENT - INTERACTIVE MODE         ║');
-  log('magenta', '╚════════════════════════════════════════════════════════════╝\n');
-
-  log('cyan', 'Enter your query (or "exit" to quit):\n');
-
-  // Simple REPL
-  const readline = require('readline');
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
-  rl.question('> ', async (query: string) => {
-    if (query.toLowerCase() === 'exit') {
-      log('yellow', '\nGoodbye! 👋\n');
-      rl.close();
-      return;
-    }
-
-    log('yellow', '\n🤖 Processing your query...\n');
-
-    const result = await runScrapingAgent(query, {
-      maxSteps: 10,
-      verbose: false,
-    });
-
-    if (result.success) {
-      log('green', '✅ Results:\n');
-      log('dim', '─'.repeat(80));
-      console.log(result.response);
-      log('dim', '─'.repeat(80) + '\n');
-    } else {
-      log('red', '❌ Error:\n');
-      console.error(result.error);
-    }
-
-    rl.close();
-  });
-}
-
-// ============================================================================
-// RUN
-// ============================================================================
-
-const args = process.argv.slice(2);
-
-if (args.includes('--interactive') || args.includes('-i')) {
-  interactiveMode().catch(console.error);
-} else {
-  runAllTests().catch(console.error);
-}
-
-// Export for use in other scripts
-export { 
-  testBasicSetup, 
-  testProductCategoryDetection, 
-  testSimpleScraping, 
-  testPriceComparison,
-  testAvailabilityCheck 
-};
+Visit `http://localhost:3000` and start scraping! 🎉
