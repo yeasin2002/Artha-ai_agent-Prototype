@@ -12,9 +12,6 @@ tsdown-starter/
 │   ├── index.ts           # Main entry point with usage examples
 │   └── lib/               # Core library code
 │       ├── ai-agent.ts    # Main AI agent orchestrator with tools
-│       └── website-config.ts  # Website configurations (to be created)
-├── tests/                 # Test files
-│   └── index.test.ts      # Unit tests
 ├── dist/                  # Build output (generated)
 ├── .kiro/                 # Kiro IDE configuration
 │   └── steering/          # AI assistant steering rules
@@ -40,7 +37,7 @@ The system uses a hierarchical multi-agent pattern with a main orchestrator and 
    - Aggregates and analyzes results
    - Generates final recommendations
 
-2. **Sub-Agents** (parallel execution):
+2. **Sub-Agents** (parallel execution with node concurrently):
    - Agent 1: Extracts data from Site A
    - Agent 2: Extracts data from Site B
    - Agent 3: Extracts data from Site C

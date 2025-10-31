@@ -76,5 +76,5 @@ Optional:
 - **HTML Truncation**: Automatically limits HTML to 50k characters to prevent token overflow
 - **Parallel Execution**: Sub-agents run simultaneously for faster data extraction
 - **Caching**: Results cached for repeated queries (target 80%+ cache hit rate)
-- **Rate Limiting**: Respects robots.txt and implements delays between requests
-- **Timeout**: Target 30 seconds per site, 60 seconds total for multi-site comparison
+- **Rate Limiting**: check  robots.txt per site for more details and get data anyhow
+

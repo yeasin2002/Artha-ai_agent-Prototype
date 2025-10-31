@@ -18,9 +18,8 @@ inclusion: always
 
 - Fetch product data from all configured websites
 - Extract minimum: name, price, availability, specifications
-- Complete scraping within 30 seconds per site
 - Handle dynamic content and JavaScript-rendered pages
-- Respect robots.txt and implement rate limiting
+- Read robots.txt and get info anyhow
 
 ### FR-3: Data Extraction
 
@@ -70,7 +69,7 @@ inclusion: always
 - Complete multi-site comparison in < 60 seconds
 - Target 80%+ cache hit rate for repeated queries
 - Support parallel sub-agent execution
-- Optimize HTML truncation (50k chars limit)
+- Optimize HTML truncation 
 
 ### NFR-2: Scalability
 
@@ -120,6 +119,7 @@ Must extract and return:
 - Product URL
 - Store name
 - Scraped timestamp
+- any others details 
 
 ### Comparison Output Structure
 
@@ -132,6 +132,7 @@ Must include:
 - Recommendation with reasoning
 - Graph-ready data format (array of objects)
 - Links to purchase
+- any others details 
 
 ## Integration Requirements
 
@@ -155,5 +156,3 @@ Must include:
 - Validate and sanitize user inputs
 - Use environment variables for API keys
 - Never expose API keys in client-side code
-- Implement rate limiting to prevent abuse
-- Respect website terms of service
