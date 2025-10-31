@@ -1,7 +1,7 @@
 {
-  "name": "tsdown-starter",
+  "name": "artha",
   "version": "0.0.0",
-  "description": "A starter for creating a TypeScript package.",
+  "description": "Artha is an AI-powered agent that helps users find the best deals on products.",
   "type": "module",
   "license": "MIT",
   "scripts": {
