@@ -23,10 +23,11 @@ const MAX_HTML_LENGTH = 50000; // Truncate HTML to prevent token overflow
 const fetchWebPageTool = tool({
   description:
     "Fetches HTML content from a given URL. Use this to retrieve web pages for scraping.",
-  parameters: z.object({
+  inputSchema: z.object({
     url: z.string().url().describe("The URL to fetch"),
   }),
-  execute: async ({ url }) => {
+  execute: async (args) => {
+    const { url } = args;
     try {
       const response = await fetch(url, {
         headers: {
@@ -70,12 +71,13 @@ const fetchWebPageTool = tool({
 const extractProductDataTool = tool({
   description:
     "Extracts structured product information from HTML content using AI. Returns comprehensive product details including name, price, specs, availability, etc.",
-  parameters: z.object({
+  inputSchema: z.object({
     html: z.string().describe("The HTML content to parse"),
     websiteName: z.string().describe("Name of the website being scraped"),
     productQuery: z.string().describe("The product search query for context"),
   }),
-  execute: async ({ html, websiteName, productQuery }) => {
+  execute: async (args) => {
+    const { html, websiteName, productQuery } = args;
     try {
       const extractionPrompt = `You are a product data extraction expert. Analyze the following HTML from ${websiteName} and extract ALL product information.
 
@@ -166,13 +168,14 @@ Return a JSON object with this structure:
 const compareProductsTool = tool({
   description:
     "Compares multiple products across different dimensions and provides intelligent analysis and recommendations.",
-  parameters: z.object({
+  inputSchema: z.object({
     products: z
       .array(z.any())
       .describe("Array of product data objects to compare"),
     userQuery: z.string().describe("Original user query for context"),
   }),
-  execute: async ({ products, userQuery }) => {
+  execute: async (args) => {
+    const { products, userQuery } = args;
     try {
       const comparisonPrompt = `You are a product comparison expert. Analyze these products and provide a comprehensive comparison.
 
@@ -259,7 +262,7 @@ Return a JSON object with this structure:
 const searchProductAcrossSitesTool = tool({
   description:
     "Orchestrates multiple sub-agents to search and extract product data from all supported websites in parallel. Each sub-agent handles one website.",
-  parameters: z.object({
+  inputSchema: z.object({
     productQuery: z
       .string()
       .describe("The product to search for across all sites"),
@@ -268,7 +271,8 @@ const searchProductAcrossSitesTool = tool({
       .optional()
       .describe("Specific websites to search (optional, defaults to all)"),
   }),
-  execute: async ({ productQuery, websites }) => {
+  execute: async (args) => {
+    const { productQuery, websites } = args;
     try {
       const sitesToSearch = websites || getAllWebsiteKeys();
 
@@ -484,7 +488,6 @@ IMPORTANT:
 - If a site fails, continue with others
 - Be thorough and accurate`,
       prompt: userQuery,
-      maxSteps: maxSteps,
       tools: {
         fetchWebPage: fetchWebPageTool,
         extractProductData: extractProductDataTool,
@@ -531,3 +534,4 @@ export {
   fetchWebPageTool,
   searchProductAcrossSitesTool,
 };
+
