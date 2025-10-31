@@ -8,6 +8,7 @@ inclusion: always
 
 ```
 tsdown-starter/
+├── doc/                    # all kiro and my doc about the project
 ├── src/                    # Source code
 │   ├── index.ts           # Main entry point with usage examples
 │   └── lib/               # Core library code
