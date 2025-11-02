@@ -7,11 +7,12 @@ import { runScrapingAgent } from "./src/index.js";
 
 async function simpleTest() {
   console.log("\n🧪 Simple Agent Test\n");
+  const USER_QUERY = `AMD Ryzen 7 7700 Gaming Processor VS AMD Ryzen 5 8600G  with Radeon Graphics`;
 
-  const result = await runScrapingAgent(
-    "What is the price of RTX 4070 on any Bangladesh tech store?",
-    { maxSteps: 5, verbose: true }
-  );
+  const result = await runScrapingAgent(USER_QUERY, {
+    maxSteps: 5,
+    verbose: true,
+  });
 
   console.log("\n" + "=".repeat(70));
   console.log("RESULT:");
