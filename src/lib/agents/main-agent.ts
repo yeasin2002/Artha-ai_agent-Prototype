@@ -6,6 +6,7 @@
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { GEMINI_MODEL } from "./config.js";
+import { logger } from "./logger.js";
 import { searchProductAcrossSitesTool } from "./tools/index.js";
 import type { AgentOptions, AgentResponse } from "./types.js";
 import { validateQuery } from "./validators.js";
@@ -22,12 +23,22 @@ export async function runScrapingAgent(
   // Validate query
   const validation = validateQuery(userQuery);
   if (!validation.valid) {
+    logger.warn("Invalid query provided", {
+      query: userQuery,
+      error: validation.error,
+    });
     return {
       success: false,
       error: validation.error,
       response: `❌ Invalid query: ${validation.error}`,
     };
   }
+
+  logger.info("Starting agent execution", {
+    query: userQuery,
+    maxSteps,
+    timestamp: new Date().toISOString(),
+  });
 
   if (verbose) {
     console.log("\n" + "=".repeat(60));
@@ -71,6 +82,11 @@ export async function runScrapingAgent(
     }
 
     if (!finalResults.success || finalResults.results.length === 0) {
+      logger.error("No data retrieved from any website", {
+        query: userQuery,
+        totalSearched: finalResults.totalSearched || 0,
+        failures: finalResults.failures || [],
+      });
       return {
         success: false,
         error: "No data retrieved from websites",
@@ -78,6 +94,16 @@ export async function runScrapingAgent(
           "❌ Unable to retrieve product data from the websites. The sites may be blocking requests or the product was not found.",
       };
     }
+
+    logger.info("Data retrieval successful", {
+      query: userQuery,
+      successCount: finalResults.successCount,
+      failedCount: finalResults.failedCount,
+      successRate: `${(
+        (finalResults.successCount / finalResults.totalSearched) *
+        100
+      ).toFixed(1)}%`,
+    });
 
     // Step 2: Generate comprehensive response based on the data
     const analysisResult = await generateText({
@@ -125,8 +151,15 @@ Format your response in a clear, readable way with proper sections. Be specific 
       usage: analysisResult.usage,
     };
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
+    const errorObj = error instanceof Error ? error : new Error(String(error));
+    const errorMessage = errorObj.message || "Unknown error occurred";
+
+    logger.error("Agent execution failed", {
+      query: userQuery,
+      error: errorMessage,
+      stack: errorObj.stack,
+      timestamp: new Date().toISOString(),
+    });
 
     if (verbose) {
       console.error("\n❌ Agent Error:", errorMessage);

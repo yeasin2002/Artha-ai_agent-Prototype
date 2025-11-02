@@ -22,3 +22,7 @@ export { GEMINI_MODEL, MAX_HTML_LENGTH } from "./config.js";
 
 // Validators
 export { validateQuery } from "./validators.js";
+
+// Logger
+export { createSubAgentLogger, logger } from "./logger.js";
+

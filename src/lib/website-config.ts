@@ -17,18 +17,19 @@ export const SUPPORTED_WEBSITES: Record<string, WebsiteConfig> = {
     searchPattern: "http://startech.com.bd/product/search?search={query}",
     productPattern: "https://www.startech.com.bd/{product-slug}",
   },
+  ryans: {
+    name: "Ryans Computers",
+    baseUrl: "https://ryansbd.com/",
+    searchPattern: "https://www.ryans.com/search?q={query}",
+    productPattern: "https://www.ryans.com/{product-slug}",
+  },
+
   techland: {
     name: "Techland BD",
     baseUrl: "https://techland.com.bd/",
     searchPattern:
       "https://www.techlandbd.com/search/advance/product/result/{query}",
     productPattern: "https://www.techlandbd.com/{product-slug}",
-  },
-  ryans: {
-    name: "Ryans Computers",
-    baseUrl: "https://ryansbd.com/",
-    searchPattern: "https://www.ryans.com/search?q={query}",
-    productPattern: "https://www.ryans.com/{product-slug}",
   },
   vibegaming: {
     name: "Vibe Gaming",
