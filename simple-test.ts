@@ -1,3 +1,4 @@
+import fa from "fs/promises";
 /**
  * Simple direct test of the agent
  */
@@ -21,6 +22,11 @@ async function simpleTest() {
   console.log(result.response);
   console.log("\nSteps:", result.steps?.length || 0);
   console.log("=".repeat(70));
+
+  // create a new .md  file in /results (with a name with date - unique)
+  const fileName = `results/${new Date().toISOString().replace(/:/g, "-")}.md`;
+  await fa.mkdir("results", { recursive: true });
+  await fa.writeFile(fileName, result.response);
 }
 
 simpleTest().catch(console.error);

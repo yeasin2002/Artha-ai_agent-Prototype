@@ -5,14 +5,8 @@
 
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
-import { getAllWebsiteKeys, getWebsiteName } from "../website-config.js";
 import { GEMINI_MODEL } from "./config.js";
-import {
-  compareProductsTool,
-  extractProductDataTool,
-  fetchWebPageTool,
-  searchProductAcrossSitesTool,
-} from "./tools/index.js";
+import { searchProductAcrossSitesTool } from "./tools/index.js";
 import type { AgentOptions, AgentResponse } from "./types.js";
 import { validateQuery } from "./validators.js";
 
@@ -45,63 +39,90 @@ export async function runScrapingAgent(
   }
 
   try {
-    const result = await generateText({
-      model: google(GEMINI_MODEL),
-      system: `You are an intelligent web scraping and product comparison agent for Bangladesh e-commerce platforms.
-
-Your capabilities:
-1. Search products across multiple websites simultaneously using sub-agents
-2. Extract comprehensive product details (A-Z everything)
-3. Compare products across price, specs, availability, warranty
-4. Provide intelligent recommendations based on user needs
-5. Support both English and Bengali queries
-
-Available websites: ${getAllWebsiteKeys().map(getWebsiteName).join(", ")}
-
-Workflow:
-1. Understand the user query and validate it
-2. Use searchProductAcrossSitesTool to deploy sub-agents for parallel data extraction
-3. Each sub-agent fetches and extracts data from one website
-4. Aggregate all results from sub-agents
-5. Use compareProductsTool to analyze and compare products
-6. Provide comprehensive response with:
-   - Price comparison (lowest to highest)
-   - Availability status
-   - Key differences
-   - Clear recommendation with reasoning
-   - Graph-ready data for visualization
-   - Purchase links
-
-IMPORTANT:
-- Always use searchProductAcrossSitesTool first to get data from all sites
-- Extract ALL product details (A-Z)
-- Provide actionable recommendations
-- Handle Bengali queries naturally
-- If a site fails, continue with others
-- Be thorough and accurate`,
-      prompt: userQuery,
-      tools: {
-        fetchWebPage: fetchWebPageTool,
-        extractProductData: extractProductDataTool,
-        compareProducts: compareProductsTool,
-        searchProductAcrossSites: searchProductAcrossSitesTool,
+    // Step 1: Directly call the search tool to gather data
+    // The execute function requires 2 arguments: input and options
+    const searchResults = await searchProductAcrossSitesTool.execute!(
+      {
+        productQuery: userQuery,
       },
+      {
+        toolCallId: "search-" + Date.now(),
+        messages: [],
+      }
+    );
+
+    // Handle AsyncIterable response
+    let finalResults: any;
+    if (Symbol.asyncIterator in Object(searchResults)) {
+      // If it's an async iterable, collect all results
+      const chunks = [];
+      for await (const chunk of searchResults as AsyncIterable<any>) {
+        chunks.push(chunk);
+      }
+      finalResults = chunks[chunks.length - 1]; // Get the last chunk
+    } else {
+      finalResults = searchResults;
+    }
+
+    if (verbose) {
+      console.log(
+        `\n📊 Search completed: ${finalResults.successCount} sites successful\n`
+      );
+    }
+
+    if (!finalResults.success || finalResults.results.length === 0) {
+      return {
+        success: false,
+        error: "No data retrieved from websites",
+        response:
+          "❌ Unable to retrieve product data from the websites. The sites may be blocking requests or the product was not found.",
+      };
+    }
+
+    // Step 2: Generate comprehensive response based on the data
+    const analysisResult = await generateText({
+      model: google(GEMINI_MODEL),
+      system: `You are a product comparison expert for Bangladesh e-commerce platforms. Analyze the scraped data and provide a comprehensive, user-friendly response.`,
+      prompt: `User Query: "${userQuery}"
+
+Scraped Data from ${finalResults.successCount} websites:
+${JSON.stringify(finalResults.results, null, 2)}
+
+Provide a detailed analysis including:
+1. **Summary**: Brief overview of what was found
+2. **Price Comparison**: List all prices from lowest to highest with website names
+3. **Availability**: Which websites have the product in stock
+4. **Product Details**: Key specifications and features from the data
+5. **Recommendation**: Which website offers the best deal and why
+6. **Purchase Links**: Mention the websites where users can buy
+
+Format your response in a clear, readable way with proper sections. Be specific about prices (in BDT) and availability status.`,
     });
 
     if (verbose) {
       console.log("\n" + "=".repeat(60));
       console.log("✅ Agent Execution Complete");
       console.log("=".repeat(60));
-      console.log(`📊 Steps Used: ${result.steps?.length || 0}/${maxSteps}`);
-      console.log(`💬 Response Length: ${result.text.length} characters`);
+      console.log(`📊 Sites Searched: ${finalResults.totalSearched}`);
+      console.log(`✅ Successful: ${finalResults.successCount}`);
+      console.log(`❌ Failed: ${finalResults.failedCount}`);
+      console.log(
+        `💬 Response Length: ${analysisResult.text.length} characters`
+      );
       console.log("=".repeat(60) + "\n");
     }
 
     return {
       success: true,
-      response: result.text,
-      steps: result.steps,
-      usage: result.usage,
+      response: analysisResult.text,
+      steps: [
+        {
+          type: "tool-call",
+          toolName: "searchProductAcrossSites",
+          result: finalResults,
+        },
+      ],
+      usage: analysisResult.usage,
     };
   } catch (error) {
     const errorMessage =
