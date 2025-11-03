@@ -1,7 +1,6 @@
 import { BROWSER_USER_AGENT } from "@/config";
 import { tool } from "ai";
 import axios from "axios";
-import chalk from "chalk";
 import * as cheerio from "cheerio";
 import { z } from "zod";
 
@@ -24,6 +23,7 @@ export const startechProductDetailsTool = tool({
 
       // Extract basic product info
       const productShortInfo = $(".product-short-info");
+      const description = $("#description .full-description").text().trim();
 
       if (productShortInfo.length === 0) {
         return {
@@ -48,6 +48,7 @@ export const startechProductDetailsTool = tool({
       const status = productShortInfo.find(".product-status").text().trim();
       const productCode = productShortInfo.find(".product-code").text().trim();
       const brand = productShortInfo.find(".product-brand").text().trim();
+      
 
       // Extract specifications
       const specifications: Record<
@@ -88,7 +89,7 @@ export const startechProductDetailsTool = tool({
         });
       });
 
-      console.log(chalk.bgGreen.red("🚀 ~ specifications: \n"), specifications);
+      // console.log(chalk.bgGreen.red("🚀 ~ specifications: \n"), specifications);
 
       return {
         success: true,
@@ -105,6 +106,7 @@ export const startechProductDetailsTool = tool({
           brand,
         },
         specifications,
+        description,
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {

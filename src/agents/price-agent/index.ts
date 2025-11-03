@@ -4,19 +4,19 @@ import chalk from "chalk";
 import { AI_MODEL_NAME } from "../../config";
 import { startechProductDetailsTool, startechSearchTool } from "./tools";
 
-export const priceAgent = async (query: string) => {
+export const priceAgent = async (prompt: string) => {
   try {
     const result = await generateText({
       model: AI_MODEL_NAME,
       stopWhen: stepCountIs(3),
-      prompt: query,
+      prompt,
       tools: {
         searchProducts: startechSearchTool,
         getProductDetails: startechProductDetailsTool,
       },
     });
 
-    console.log(chalk.white("token used: "), result.usage.totalTokens);
+    console.log(chalk.bgRed.white("token used: "), result.usage);
     return result.text;
   } catch (error) {
     console.log("Search Agent error", error);
