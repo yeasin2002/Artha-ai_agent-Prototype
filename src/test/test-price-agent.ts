@@ -8,7 +8,7 @@ async function testAgent() {
 
   try {
     const result = await priceAgent(
-      `Price and  Specification  of  AMD Ryzen 5 5600G Processor with Radeon Graphics in startech?`
+      `Price and  Specification  of  AMD Ryzen 7 7700 Processor in startech?`
     );
     console.log("\nResult:\n");
     console.log(result);

@@ -8,7 +8,7 @@ export const priceAgent = async (prompt: string) => {
   try {
     const result = await generateText({
       model: AI_MODEL_NAME,
-      stopWhen: stepCountIs(3),
+      stopWhen: stepCountIs(5),
       prompt,
       tools: {
         searchProducts: startechSearchTool,

@@ -48,7 +48,6 @@ export const startechProductDetailsTool = tool({
       const status = productShortInfo.find(".product-status").text().trim();
       const productCode = productShortInfo.find(".product-code").text().trim();
       const brand = productShortInfo.find(".product-brand").text().trim();
-      
 
       // Extract specifications
       const specifications: Record<
@@ -90,6 +89,11 @@ export const startechProductDetailsTool = tool({
       });
 
       // console.log(chalk.bgGreen.red("🚀 ~ specifications: \n"), specifications);
+      console.log({
+        current: priceIns,
+        previous: priceDel,
+        regular: regularPrice,
+      });
 
       return {
         success: true,
