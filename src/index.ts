@@ -4,7 +4,7 @@ import "dotenv/config";
  * Example usage and demonstrations
  */
 
-import { runScrapingAgent } from "./lib/ai-agent.js";
+import { runScrapingAgent } from "./agents/scrape-agent";
 
 // Check for API key
 if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
@@ -98,12 +98,13 @@ if (isMainModule) {
 }
 
 // Export for use as library
-export { runScrapingAgent } from "./lib/ai-agent.js";
-export type { AgentOptions } from "./lib/ai-agent.js";
+export { runScrapingAgent } from "./agents/scrape-agent/index.js";
+export type { AgentOptions } from "./agents/scrape-agent/index.js";
 export {
-  SUPPORTED_WEBSITES,
   getAllWebsiteKeys,
   getSearchUrl,
   getWebsiteName,
-} from "./lib/website-config.js";
-export type { WebsiteConfig } from "./lib/website-config.js";
+  SUPPORTED_WEBSITES,
+} from "./config/website-config.js";
+export type { WebsiteConfig } from "./config/website-config.js";
+

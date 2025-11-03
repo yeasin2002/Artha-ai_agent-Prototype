@@ -1,4 +1,4 @@
-import { priceAgent } from "../lib/price-agent";
+import { priceAgent } from "../agents/price-agent";
 
 async function testAgent() {
   console.log("\n🧪 Testing AI Web Scraping Agent\n");
@@ -7,7 +7,9 @@ async function testAgent() {
   console.log("= ".repeat(70));
 
   try {
-    const result = await priceAgent();
+    const result = await priceAgent(
+      `Price and  Specification  of  AMD Ryzen 5 5600G Processor with Radeon Graphics in startech?`
+    );
     console.log("\nResult:\n");
     console.log(result);
   } catch (error) {

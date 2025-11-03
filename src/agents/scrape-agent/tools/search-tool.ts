@@ -10,7 +10,7 @@ import {
   getAllWebsiteKeys,
   getSearchUrl,
   getWebsiteName,
-} from "../../website-config.js";
+} from "../../../config/website-config.js";
 import { GEMINI_MODEL, MAX_HTML_LENGTH } from "../config.js";
 import {
   logSubAgentError,

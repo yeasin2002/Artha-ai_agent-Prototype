@@ -1,3 +1,4 @@
+import { BROWSER_USER_AGENT } from "@/config";
 import { tool } from "ai";
 import axios from "axios";
 import chalk from "chalk";
@@ -19,10 +20,7 @@ export const startechProductTool = tool({
     try {
       // Fetch the HTML from the URL
       const response = await axios.get(url, {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        },
+        headers: { "User-Agent": BROWSER_USER_AGENT },
       });
 
       const html = response.data;
