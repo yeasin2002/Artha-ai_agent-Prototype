@@ -1,4 +1,4 @@
-import { priceAgent } from "./lib/price-agent";
+import { priceAgent } from "../lib/price-agent";
 
 async function testAgent() {
   console.log("\n🧪 Testing AI Web Scraping Agent\n");

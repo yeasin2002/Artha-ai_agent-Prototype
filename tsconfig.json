@@ -16,5 +16,5 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["src", "src/test-price-agent.ts"]
+  "include": ["src", "src/test/test-price-agent.ts"]
 }

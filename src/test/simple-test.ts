@@ -3,7 +3,7 @@ import fa from "fs/promises";
  * Simple direct test of the agent
  */
 
-import { runScrapingAgent } from "./src/index.js";
+import { runScrapingAgent } from "../index.js";
 
 async function simpleTest() {
   console.log("\n🧪 Simple Agent Test\n");

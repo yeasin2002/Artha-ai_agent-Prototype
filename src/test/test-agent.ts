@@ -2,7 +2,7 @@
  * Simple test to verify AI agent is working
  */
 
-import { runScrapingAgent } from "./src/index.js";
+import { runScrapingAgent } from "../index.js";
 
 // Check for API key
 if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
